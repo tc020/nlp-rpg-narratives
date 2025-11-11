@@ -1,0 +1,14 @@
+
+The file pv-analogy.csv contains 685 BV-PV analogy pairs, plus one
+header line.
+
+Each line is tab-separated and provides the following seven columns:
+
+     1 base verb 1 (BV1)
+     2 particle verb 1 (PV1)
+     3 base verb 2 (BV2)	
+     4 particle verb 2 (PV2)
+     5 particle - one out of {ab,an,auf,aus}
+     6 MajorityClass-4 - majority class label from {Comp,ShiftReg,AsymComp,ShiftDiff}
+     7 BinaryClass-2 - binary class label from {Shift,Comp}
+
