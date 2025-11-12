@@ -12,7 +12,7 @@ TRAIN_DATA = [
      {"pos": ["DET", "NOUN", "VERB", "ADP", "DET", "PROPN", "PUNCT"]}),
 
     ("Der Perainegeweihte heilt die Wunden des Bauern.", 
-     {"pos": ["DET", "NOUN", "VERB", "DET", "NOUN", "ADP", "DET", "NOUN", "PUNCT"]}),
+     {"pos": ["DET", "NOUN", "VERB", "DET", "NOUN", "DET", "NOUN", "PUNCT"]}),
 
     ("In Gareth versammeln sich die Geweihten zum Gebet.", 
      {"pos": ["ADP", "PROPN", "VERB", "PRON", "DET", "NOUN", "ADP", "NOUN", "PUNCT"]}),
