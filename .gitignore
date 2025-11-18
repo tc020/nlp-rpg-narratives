@@ -1,3 +1,18 @@
 
 dsa_names.txt
 dsa_dnames.txt
+de_dsa_tagger/attribute_ruler/patterns
+de_dsa_tagger/config.cfg
+de_dsa_tagger/lemmatizer/cfg
+de_dsa_tagger/lemmatizer/model
+de_dsa_tagger/lemmatizer/trees
+de_dsa_tagger/meta.json
+de_dsa_tagger/morphologizer/cfg
+de_dsa_tagger/morphologizer/model
+de_dsa_tagger/ner/cfg
+de_dsa_tagger/ner/model
+de_dsa_tagger/ner/moves
+de_dsa_tagger/parser/model
+dsa_ner_dev.spacy
+dsa_ner_train.spacy
+dsa_pos_training.spacy
