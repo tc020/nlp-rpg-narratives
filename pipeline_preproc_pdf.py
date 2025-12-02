@@ -1,8 +1,6 @@
 import re
 
-# ---------------------------------------------------------
-# 1) POSTS aus doc.spans["layout"] extrahieren (mit Link-Filter)
-# ---------------------------------------------------------
+#1) POSTS aus doc.spans["layout"] extrahieren (mit Link-Filter)
 def extract_posts_from_layout(doc):
     posts = []
     current_post = ""
@@ -37,9 +35,7 @@ def extract_posts_from_layout(doc):
 
 
 
-# ---------------------------------------------------------
-# 2) POSTS mit Regex bereinigen
-# ---------------------------------------------------------
+#2) POSTS mit Regex bereinigen
 def clean_posts(posts):
 
     cleaned = []
@@ -68,9 +64,7 @@ def clean_posts(posts):
 
 
 
-# ---------------------------------------------------------
-# 3) Gesamtpipeline
-# ---------------------------------------------------------
+#3) Gesamtpipeline
 def process_doc_into_posts(doc):
     posts = extract_posts_from_layout(doc)  #Posts extrahieren
     final_posts = clean_posts(posts)        #Bereinigen
