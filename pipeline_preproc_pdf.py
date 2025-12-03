@@ -1,4 +1,6 @@
 import re
+import nltk
+from nltk.tokenize import word_tokenize
 
 #1) POSTS aus doc.spans["layout"] extrahieren (mit Link-Filter)
 def extract_posts_from_layout(doc):
@@ -61,7 +63,6 @@ def clean_posts(posts):
     cleaned = [x for x in cleaned if x != ""]
 
     return cleaned
-
 
 
 #3) Gesamtpipeline
