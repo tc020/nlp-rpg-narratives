@@ -99,5 +99,6 @@ def clean_posts_from_direct_speech(posts):
 #3) Gesamtpipeline
 def process_doc_into_posts(doc):
     posts = extract_posts_from_layout(doc)  #Posts extrahieren
-    final_posts = clean_posts_from_direct_speech(posts)        #Bereinigen
+    final_posts = clean_posts(posts)        #Bereinigen
+    #final_posts = clean_posts_from_direct_speech(posts)
     return final_posts                      #Fertige Posts zurückgeben
