@@ -49,9 +49,6 @@ def clean_posts(posts):
         neu = re.sub(pattern_full, "", t).strip()
         cleaned.append(neu)
 
-    #alle Zahlen entfernen
-    cleaned = [re.sub(r"\d+", "", t).strip() for t in cleaned]
-
     #2b: 2-Wort-Posts löschen (meist nur "von Autor")
     cleaned = [s for s in cleaned if len(s.split()) != 2]
 
@@ -83,9 +80,6 @@ def clean_posts_from_direct_speech(posts):
     quote_pattern = rf"{quote_chars}[^\"'„“‚‘»«›‹]*{quote_chars}"
     cleaned = [re.sub(quote_pattern, "", t).strip() for t in cleaned]
 
-    # >>> NEU: alle Zahlen entfernen
-    cleaned = [re.sub(r"\d+", "", t).strip() for t in cleaned]
-
     # 2b: 2-Wort-Posts löschen (meist nur "von Autor")
     cleaned = [s for s in cleaned if len(s.split()) != 2]
 
@@ -101,88 +95,9 @@ def clean_posts_from_direct_speech(posts):
 
     return cleaned
 
-import re
-import string
-
-def clean_posts_from_direct_speechV2(posts, debug=False):
-
-    def dbg(label, value):
-        if debug:
-            print(f"[DEBUG] {label}: {value}")
-
-    cleaned = []
-
-    # 2a: "von <Name> Verfasst: DATUM ZEIT" entfernen
-    pattern_full = r"von\s+\w+(?:\s+\w+)*\s+Verfasst:\s+\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}"
-
-    for t in posts:
-        orig = t
-        neu = re.sub(pattern_full, "", t).strip()
-        dbg("Original", orig)
-        dbg("Nach Entfernen pattern_full", neu)
-        cleaned.append(neu)
-
-    # Direkte Rede entfernen
-    quote_chars = r"[\"'„“‚‘»«›‹]"
-    quote_pattern = rf"{quote_chars}[^\"'„“‚‘»«›‹]*{quote_chars}"
-    cleaned2 = []
-    for t in cleaned:
-        new_t = re.sub(quote_pattern, "", t).strip()
-        dbg("Nach Entfernen direkter Rede", new_t)
-        cleaned2.append(new_t)
-    cleaned = cleaned2
-
-    # Zahlen entfernen
-    cleaned2 = []
-    for t in cleaned:
-        new_t = re.sub(r"\d+", "", t).strip()
-        dbg("Nach Entfernen Zahlen", new_t)
-        cleaned2.append(new_t)
-    cleaned = cleaned2
-
-    # Satzzeichen entfernen
-    punctuation_pattern = rf"[{re.escape(string.punctuation)}„”‚‘«»‹›]"
-    cleaned2 = []
-    for t in cleaned:
-        new_t = re.sub(punctuation_pattern, "", t).strip()
-        dbg("Nach Entfernen Satzzeichen", new_t)
-        cleaned2.append(new_t)
-    cleaned = cleaned2
-
-    # 2b: 2-Wort-Posts löschen
-    before = cleaned[:]
-    cleaned = [s for s in cleaned if len(s.split()) != 2]
-    dbg("Nach Entfernen 2-Wort-Posts", cleaned)
-
-    # 2c: "von <Name>" am Anfang löschen
-    cleaned2 = []
-    for t in cleaned:
-        new_t = re.sub(r"^von\s+\w+\s+", "", t)
-        dbg("Nach Entfernen von <Name>", new_t)
-        cleaned2.append(new_t)
-    cleaned = cleaned2
-
-    # 2d: Restliche "Verfasst: DATUM ZEIT" entfernen
-    pattern_date = r"Verfasst:\s+\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}"
-    cleaned2 = []
-    for t in cleaned:
-        new_t = re.sub(pattern_date, "", t).strip()
-        dbg("Nach Entfernen pattern_date", new_t)
-        cleaned2.append(new_t)
-    cleaned = cleaned2
-
-    # 2e: Leere Einträge entfernen
-    before = cleaned[:]
-    cleaned = [x for x in cleaned if x.strip() != ""]
-    dbg("Endgültiges Ergebnis", cleaned)
-
-    return cleaned
-
-
 #3) Gesamtpipeline
 def process_doc_into_posts(doc):
     posts = extract_posts_from_layout(doc)  #Posts extrahieren
     #final_posts = clean_posts(posts)        #Bereinigen
-    print(posts)
-    final_posts = clean_posts_from_direct_speech(posts, debug=True)
+    final_posts = clean_posts_from_direct_speech(posts)
     return final_posts                      #Fertige Posts zurückgeben
