@@ -49,6 +49,9 @@ def clean_posts(posts):
         neu = re.sub(pattern_full, "", t).strip()
         cleaned.append(neu)
 
+    #alle Zahlen entfernen
+    cleaned = [re.sub(r"\d+", "", t).strip() for t in cleaned]
+
     #2b: 2-Wort-Posts löschen (meist nur "von Autor")
     cleaned = [s for s in cleaned if len(s.split()) != 2]
 
@@ -75,10 +78,13 @@ def clean_posts_from_direct_speech(posts):
         neu = re.sub(pattern_full, "", t).strip()
         cleaned.append(neu)
 
-    # >>> NEU: Direkte Rede in doppelten Anführungszeichen löschen
-    # Entfernt "…" und „…“ (auch über mehrere Wörter)
-    quote_pattern = r"[\"„“][^\"„”]*[\"”]"
+    # Direkte Rede in allen Anführungszeichen entfernen
+    quote_chars = r"[\"'„“‚‘»«›‹]"
+    quote_pattern = rf"{quote_chars}[^\"'„“‚‘»«›‹]*{quote_chars}"
     cleaned = [re.sub(quote_pattern, "", t).strip() for t in cleaned]
+
+    # >>> NEU: alle Zahlen entfernen
+    cleaned = [re.sub(r"\d+", "", t).strip() for t in cleaned]
 
     # 2b: 2-Wort-Posts löschen (meist nur "von Autor")
     cleaned = [s for s in cleaned if len(s.split()) != 2]
@@ -86,7 +92,7 @@ def clean_posts_from_direct_speech(posts):
     # 2c: "von <Name>" am Anfang löschen
     cleaned = [re.sub(r"^von\s+\w+\s+", "", t) for t in cleaned]
 
-    # 2d: Nochmals überall "Verfasst: DATUM ZEIT" löschen
+    # 2d: "Verfasst: DATUM ZEIT" entfernen (falls noch Reste)
     pattern_date = r"Verfasst:\s+\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}"
     cleaned = [re.sub(pattern_date, "", t).strip() for t in cleaned]
 
@@ -99,6 +105,6 @@ def clean_posts_from_direct_speech(posts):
 #3) Gesamtpipeline
 def process_doc_into_posts(doc):
     posts = extract_posts_from_layout(doc)  #Posts extrahieren
-    final_posts = clean_posts(posts)        #Bereinigen
-    #final_posts = clean_posts_from_direct_speech(posts)
+    #final_posts = clean_posts(posts)        #Bereinigen
+    final_posts = clean_posts_from_direct_speech(posts)
     return final_posts                      #Fertige Posts zurückgeben
