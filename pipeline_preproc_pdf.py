@@ -64,9 +64,40 @@ def clean_posts(posts):
 
     return cleaned
 
+def clean_posts_from_direct_speech(posts):
+
+    cleaned = []
+
+    # 2a: "von <Name> Verfasst: DATUM ZEIT" entfernen
+    pattern_full = r"von\s+\w+(?:\s+\w+)*\s+Verfasst:\s+\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}"
+
+    for t in posts:
+        neu = re.sub(pattern_full, "", t).strip()
+        cleaned.append(neu)
+
+    # >>> NEU: Direkte Rede in doppelten Anführungszeichen löschen
+    # Entfernt "…" und „…“ (auch über mehrere Wörter)
+    quote_pattern = r"[\"„“][^\"„”]*[\"”]"
+    cleaned = [re.sub(quote_pattern, "", t).strip() for t in cleaned]
+
+    # 2b: 2-Wort-Posts löschen (meist nur "von Autor")
+    cleaned = [s for s in cleaned if len(s.split()) != 2]
+
+    # 2c: "von <Name>" am Anfang löschen
+    cleaned = [re.sub(r"^von\s+\w+\s+", "", t) for t in cleaned]
+
+    # 2d: Nochmals überall "Verfasst: DATUM ZEIT" löschen
+    pattern_date = r"Verfasst:\s+\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}"
+    cleaned = [re.sub(pattern_date, "", t).strip() for t in cleaned]
+
+    # 2e: leere Texte entfernen
+    cleaned = [x for x in cleaned if x != ""]
+
+    return cleaned
+
 
 #3) Gesamtpipeline
 def process_doc_into_posts(doc):
     posts = extract_posts_from_layout(doc)  #Posts extrahieren
-    final_posts = clean_posts(posts)        #Bereinigen
+    final_posts = clean_posts_from_direct_speech(posts)        #Bereinigen
     return final_posts                      #Fertige Posts zurückgeben
