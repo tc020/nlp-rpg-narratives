@@ -7,10 +7,21 @@ class TextPreprocessingPipeline:
         print("Lade spaCy-Modell ...")
         self.nlp = spacy.load(spacy_model)
 
-    def normalize_and_tokenize(self, text):
+    """def normalize_and_tokenize(self, text):
+        #text = text.lower()
+        tokens = word_tokenize(text)
+        return tokens"""
+    
+    def normalize_and_tokenize(self, text_or_tokens):
+        if isinstance(text_or_tokens, list):
+            text = " ".join(text_or_tokens)
+        else:
+            text = text_or_tokens
+
         text = text.lower()
         tokens = word_tokenize(text)
         return tokens
+
 
     def clean_tokens(self, tokens): #Von Satzzeichen und Ziffern bereinigen
         cleaned = [
@@ -20,33 +31,37 @@ class TextPreprocessingPipeline:
         ]
         return cleaned
 
-    def lemmatize(self, tokens):
-        doc = self.nlp(" ".join(tokens))
+    def lemmatize(self, text):
+        #doc = self.nlp(" ".join(tokens))
+        doc = self.nlp(text)
         return [token.lemma_ for token in doc]
+
 
     def process_post(self, text, debug=False):
         if debug:
-            print(f"\n--- Starte Verarbeitung für Post ---")
+            print("\n--- Starte Verarbeitung für Post ---")
             print(f"Original: {text}")
+            print("Typ lemmas:", type(lemmas))
+            print("Typ tokens:", type(tokens))
 
-        # 1. Normalisierung & Tokenisierung
-        tokens = self.normalize_and_tokenize(text)
+        # 1. Lemmatisierung auf Rohtext
+        lemmas = self.lemmatize(text)
 
-        # 2. Bereinigung
+        # 2. Lowercase + Tokenisierung
+        tokens = self.normalize_and_tokenize(lemmas)
+
+        # 3. Bereinigung
         cleaned_tokens = self.clean_tokens(tokens)
 
-        # 3. Lemmatisierung
-        lemmas = self.lemmatize(cleaned_tokens)
-
         # 4. Finaler String
-        final_str = " ".join(lemmas).lower()
+        final_str = " ".join(cleaned_tokens)
 
         if debug:
-            #print(f"\nLemmatisierte Wörter (Liste): {lemmas}")
-            print(f"Bereinigter & lemmatsierter Post: {final_str}")
+            print(f"Bereinigter & lemmatisierter Post: {final_str}")
             print("--------------------------------------------------")
 
         return final_str
+
 
     def process_posts(self, posts, debug=False):
         return [self.process_post(p, debug=debug) for p in posts]
